@@ -1,1 +1,28 @@
-
+db.createCollection("CityWithCountry2",
+{
+    viewOn: "city",
+    pipeline:[
+        {
+          $lookup:{
+            from: "country",
+            localField: "CountryCode",
+            foreignField: "Code",
+            as: "countryDetail"
+             }
+        },
+        {
+             $unwind: "$countryDetail"
+        },
+        {
+            $project: {
+                _id:0,
+                "CityName":"$Name",
+                "CityCountryCode":"$CountryCode",
+                "Population":"$Population",
+                "CountryName": "$countryDetail.Name",
+                "CountryPopulation": "$countryDetail.Population"
+            }
+        }
+    ]
+}
+)
